@@ -1,0 +1,36 @@
+﻿@inherits LayoutComponentBase
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
+<PageTitle>BlazorAppWithCustomAuth</PageTitle>
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <AuthorizeView>
+                <Authorized>
+                    <a @onclick="Logout" href="javascript:void(0)">登出</a>
+                </Authorized>
+                <NotAuthorized>
+                    <a href="/login">登入</a>
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+@code {
+    private async Task Logout()
+    {
+        var customAuth = (CustomAuthStateProvider)authStateProvider;
+        await customAuth.UpdateAuthenticationState(null);
+        navManager.NavigateTo("/", true);
+    }
+}
